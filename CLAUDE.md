@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a single-file personal travel journal web app for a 6-day Hokkaido trip (Sapporo, Asahikawa, Otaru). Everything lives in `hokkaido.html` — no build step, no dependencies, no server required. Open the file directly in a browser.
+This is a single-file personal travel journal web app for a 6-day Hokkaido trip (Sapporo, Asahikawa, Otaru). Everything lives in `index.html` — no build step, no dependencies, no server required. Open the file directly in a browser.
 
 ## Architecture
 
-`hokkaido.html` is a self-contained HTML/CSS/JS file structured as follows:
+`index.html` is a self-contained HTML/CSS/JS file structured as follows:
 
 **Sections (in DOM order):**
 1. Hero — full-viewport with canvas snow/dandelion animation and season toggle (winter ❄ / summer ☀)
@@ -42,10 +42,10 @@ This is a single-file personal travel journal web app for a 6-day Hokkaido trip 
 
 ## Development
 
-No build tools. Edit `hokkaido.html` and reload in browser. To preview:
+No build tools. Edit `index.html` and reload in browser. To preview:
 
 ```
-open hokkaido.html
+open index.html
 ```
 
 ## Extending Day Config
