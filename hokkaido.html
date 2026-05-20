@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北海道六日記</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Yomogi&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f5f0e8;
+  --paper-warm: #ede6d6;
+  --ink: #1c2b4a;
+  --ink-light: #3a4d6a;
+  --ink-faint: rgba(28,43,74,0.13);
+  --gold: #c9a96e;
+  --gold-dark: #9a7540;
+  --green: #5c7f5c;
+  --blue-city: #2d5a7a;
+  --seal-red: #9b2335;
+  --line-color: rgba(28,43,74,0.11);
+  --font-title: 'Kaisei Decol','Noto Serif TC',serif;
+  --font-body: 'Noto Serif TC',serif;
+  --font-hand: 'Yomogi','Noto Serif TC',cursive;
+  --shadow-soft: 0 4px 24px rgba(28,43,74,0.10);
+  --shadow-card: 0 8px 32px rgba(28,43,74,0.16);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--paper);color:var(--ink);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(245,240,232,0.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-color);padding:14px 32px;display:flex;align-items:center;gap:32px;transform:translateY(-100%);transition:transform 0.4s ease}
+nav.visible{transform:translateY(0)}
+.nav-logo{font-family:var(--font-title);font-size:1.05rem;color:var(--ink);text-decoration:none}
+nav a{font-size:0.82rem;color:var(--ink-light);text-decoration:none;letter-spacing:0.1em;transition:color 0.2s}
+nav a:hover{color:var(--gold-dark)}
+
+/* HERO */
+#hero{position:relative;height:100vh;min-height:580px;background:linear-gradient(180deg,#04080f 0%,#0c1828 28%,#1c2b4a 60%,#2d4a6b 82%,#3a5a78 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#snow-canvas{position:absolute;inset:0;pointer-events:none}
+.hero-content{position:relative;z-index:2;text-align:center;padding:24px}
+.hero-eyebrow{font-size:clamp(0.75rem,1.5vw,0.95rem);letter-spacing:0.5em;color:rgba(201,169,110,0.65);margin-bottom:20px;font-family:var(--font-body);text-transform:uppercase}
+.hero-title{font-family:var(--font-title);font-size:clamp(4rem,12vw,9rem);color:#f0ebe0;line-height:1.05;letter-spacing:-0.01em;text-shadow:0 0 120px rgba(201,169,110,0.25)}
+.hero-title em{color:var(--gold);font-style:normal}
+.hero-sub{font-family:var(--font-hand);font-size:clamp(1rem,2.5vw,1.4rem);color:rgba(240,235,224,0.6);letter-spacing:0.25em;margin-top:20px}
+.hero-dates{display:inline-block;margin-top:24px;border:1px solid rgba(201,169,110,0.35);padding:9px 28px;font-size:0.88rem;letter-spacing:0.25em;color:rgba(201,169,110,0.75);outline:none;font-family:var(--font-body)}
+.hero-scroll{position:absolute;bottom:210px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0.45;animation:bob 2.2s ease-in-out infinite}
+.hero-scroll span{font-size:0.7rem;letter-spacing:0.3em;color:var(--gold)}
+.hero-scroll::after{content:'↓';color:var(--gold);font-size:1.1rem}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+.mountain{position:absolute;bottom:0;left:0;right:0;height:200px;background:var(--paper);clip-path:polygon(0 100%,0 68%,6% 55%,12% 62%,19% 40%,27% 55%,33% 30%,40% 48%,47% 18%,54% 42%,61% 28%,68% 50%,74% 35%,82% 54%,88% 42%,94% 58%,100% 48%,100% 100%);transition:background 1.4s ease}
+/* SUMMER */
+#hero.summer{background:linear-gradient(180deg,#1e3a68 0%,#3a5496 26%,#6a5faa 50%,#b890c8 66%,#7aaa5a 83%,#4a7a35 100%)}
+#hero.summer .mountain{background:#4e7e38}
+#hero.summer .hero-title{text-shadow:0 0 80px rgba(160,110,200,0.4)}
+#hero.summer .hero-title em{color:#e8c0f8}
+#hero.summer .hero-eyebrow{color:rgba(230,210,248,0.7)}
+#hero.summer .hero-sub{color:rgba(235,220,255,0.65)}
+#hero.summer .hero-dates{border-color:rgba(210,170,240,0.4);color:rgba(225,195,248,0.8)}
+#hero.summer .hero-scroll span{color:#e8c0f8}
+#hero.summer .hero-scroll::after{color:#e8c0f8}
+/* SEASON TOGGLE */
+.season-toggle{position:absolute;top:24px;right:24px;z-index:5;display:flex;border:1px solid rgba(255,255,255,0.2);border-radius:2px;overflow:hidden;backdrop-filter:blur(6px)}
+.season-btn{background:transparent;border:none;color:rgba(255,255,255,0.45);font-size:0.78rem;letter-spacing:0.12em;padding:7px 16px;cursor:pointer;font-family:var(--font-body);transition:background 0.35s,color 0.35s}
+.season-btn.active{background:rgba(255,255,255,0.18);color:#fff}
+.season-btn:not(.active):hover{color:rgba(255,255,255,0.75)}
+
+/* SHARED SECTION */
+.section-inner{max-width:1080px;margin:0 auto;padding:88px 28px}
+.section-head{text-align:center;margin-bottom:60px}
+.section-title{font-family:var(--font-title);font-size:clamp(1.8rem,4vw,2.6rem);color:var(--ink);margin-bottom:6px}
+.section-sub{font-size:0.82rem;letter-spacing:0.3em;color:var(--ink-light);margin-top:4px;text-transform:uppercase}
+.ink-rule{width:56px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto 0}
+
+/* CITIES */
+#cities{background:var(--paper)}
+.city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.city-card{background:#fff;border:1px solid var(--line-color);padding:36px 28px 32px;position:relative;box-shadow:var(--shadow-soft);transition:transform 0.3s ease,box-shadow 0.3s ease}
+.city-card:nth-child(1){transform:rotate(-0.7deg)}
+.city-card:nth-child(2){transform:rotate(0.5deg);margin-top:18px}
+.city-card:nth-child(3){transform:rotate(-0.4deg)}
+.city-card:hover{transform:rotate(0) translateY(-5px)!important;box-shadow:var(--shadow-card)}
+.city-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.city-card.sapporo::before{background:var(--blue-city)}
+.city-card.asahikawa::before{background:var(--green)}
+.city-card.otaru::before{background:var(--gold-dark)}
+.city-icon{font-size:2.2rem;display:block;margin-bottom:14px}
+.city-jp{font-family:var(--font-title);font-size:1.9rem;color:var(--ink);margin-bottom:4px}
+.city-en{font-size:0.78rem;letter-spacing:0.2em;color:var(--gold-dark);margin-bottom:18px}
+.city-desc{font-size:0.86rem;line-height:1.95;color:var(--ink-light);font-weight:300}
+
+/* JOURNAL */
+#journal{background:var(--paper-warm)}
+.day-tabs{display:flex;border-bottom:2px solid var(--line-color);overflow-x:auto;scrollbar-width:none;margin-bottom:40px}
+.day-tabs::-webkit-scrollbar{display:none}
+.day-tab{flex-shrink:0;padding:12px 22px;border:none;background:transparent;font-family:var(--font-body);font-size:0.88rem;color:var(--ink-light);cursor:pointer;position:relative;letter-spacing:0.08em;transition:color 0.2s}
+.day-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--ink);transform:scaleX(0);transition:transform 0.3s ease}
+.day-tab.active{color:var(--ink);font-weight:500}
+.day-tab.active::after{transform:scaleX(1)}
+.day-panel{display:none}
+.day-panel.active{display:block}
+
+.day-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap}
+.day-number{font-family:var(--font-title);font-size:1.9rem;color:var(--ink)}
+.city-badge{font-size:0.78rem;letter-spacing:0.12em;color:#fff;padding:3px 12px;border-radius:1px}
+.city-badge.sapporo{background:var(--blue-city)}
+.city-badge.asahikawa{background:var(--green)}
+.city-badge.otaru{background:var(--gold-dark)}
+.day-date-in{font-family:var(--font-body);font-size:0.85rem;color:var(--ink-light);border:none;background:transparent;border-bottom:1px solid var(--line-color);padding:2px 6px;width:110px;outline:none}
+.wx-sel{font-size:1.2rem;border:1px solid var(--line-color);background:#fff;padding:3px 6px;border-radius:3px;cursor:pointer;outline:none}
+
+/* Journal paper */
+.journal-paper{background:#fff;border:1px solid var(--line-color);padding:32px 36px 32px 60px;position:relative;min-height:220px;box-shadow:var(--shadow-soft);margin-bottom:28px;background-image:repeating-linear-gradient(transparent,transparent 31px,rgba(28,43,74,0.09) 31px,rgba(28,43,74,0.09) 32px);background-position:0 24px}
+.journal-paper::before{content:'';position:absolute;top:0;left:48px;bottom:0;width:1px;background:rgba(155,35,53,0.25)}
+.journal-text{min-height:190px;line-height:32px;font-family:var(--font-hand);font-size:1.05rem;color:var(--ink);outline:none;word-break:break-all}
+.journal-text:empty::before{content:attr(data-ph);color:var(--ink-faint)}
+.seal{position:absolute;top:18px;right:22px;width:42px;height:42px;border:2px solid var(--seal-red);display:flex;align-items:center;justify-content:center;color:var(--seal-red);font-family:var(--font-title);font-size:0.95rem;transform:rotate(9deg);opacity:0.55}
+
+/* Day sub-sections */
+.day-sec{background:#fff;border:1px solid var(--line-color);padding:26px 28px;margin-bottom:20px;box-shadow:var(--shadow-soft)}
+.day-sec-title{font-family:var(--font-title);font-size:1.05rem;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.day-sec-title::after{content:'';flex:1;height:1px;background:var(--line-color)}
+
+/* Food items */
+.food-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-color);font-size:0.88rem}
+.food-item:last-child{border-bottom:none}
+.food-name{flex:1;font-weight:500}
+.food-rest{color:var(--ink-light);font-size:0.8rem}
+.food-stars{color:var(--gold);font-size:0.9rem}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:1.1rem;padding:2px 4px;transition:color 0.2s;line-height:1}
+.del-btn:hover{color:var(--seal-red)}
+
+/* Expense items */
+.exp-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line-color);font-size:0.88rem}
+.exp-item:last-child{border-bottom:none}
+.exp-cat{font-size:1rem;width:24px;text-align:center}
+.exp-name{flex:1;color:var(--ink)}
+.exp-amt{font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink)}
+.day-total-row{display:flex;justify-content:flex-end;align-items:baseline;gap:10px;margin-top:14px;padding-top:12px;border-top:1.5px solid var(--ink-faint)}
+.day-total-lbl{font-size:0.82rem;color:var(--ink-light);letter-spacing:0.12em}
+.day-total-num{font-family:var(--font-title);font-size:1.45rem;color:var(--ink)}
+
+/* Add forms */
+.add-form{display:none;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--paper);border:1px solid var(--line-color);padding:18px;margin-top:14px}
+.add-form.open{display:flex}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:110px}
+.fg label{font-size:0.74rem;color:var(--ink-light);letter-spacing:0.12em}
+.fg input,.fg select{border:1px solid var(--line-color);background:#fff;padding:7px 10px;font-family:var(--font-body);font-size:0.88rem;color:var(--ink);outline:none}
+.fg input:focus,.fg select:focus{border-color:var(--ink-light)}
+.star-row{display:flex;gap:3px;font-size:1.3rem;cursor:pointer}
+.star-row span{color:#ddd;transition:color 0.15s;user-select:none}
+.star-row span.on{color:var(--gold)}
+.btn-pri{background:var(--ink);color:var(--paper);border:none;padding:8px 20px;font-family:var(--font-body);font-size:0.85rem;cursor:pointer;letter-spacing:0.1em;transition:background 0.2s;align-self:flex-end;height:36px}
+.btn-pri:hover{background:var(--ink-light)}
+.btn-add{background:transparent;border:1px dashed var(--line-color);color:var(--ink-light);padding:8px 20px;font-family:var(--font-body);font-size:0.82rem;cursor:pointer;transition:all 0.2s;width:100%;margin-top:12px;letter-spacing:0.1em}
+.btn-add:hover{border-color:var(--ink);color:var(--ink)}
+
+/* Photos */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;margin-bottom:14px}
+.photo-item{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;box-shadow:0 0 0 7px #fff,var(--shadow-soft);transition:transform 0.2s}
+.photo-item:nth-child(odd){transform:rotate(-1.4deg)}
+.photo-item:nth-child(even){transform:rotate(1.1deg)}
+.photo-item:hover{transform:rotate(0) scale(1.06)!important;z-index:10}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-del{position:absolute;top:3px;right:3px;background:rgba(255,255,255,0.88);border:none;border-radius:50%;width:20px;height:20px;font-size:0.65rem;cursor:pointer;display:none;align-items:center;justify-content:center;color:var(--seal-red)}
+.photo-item:hover .photo-del{display:flex}
+.upload-area{border:2px dashed var(--line-color);padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-top:4px}
+.upload-area:hover{border-color:var(--ink-light)}
+.upload-area input{display:none}
+.upload-area .upload-icon{font-size:1.8rem;color:var(--ink-faint);margin-bottom:6px}
+.upload-area p{font-size:0.82rem;color:var(--ink-light);letter-spacing:0.1em}
+
+/* EXPENSE OVERVIEW */
+#expenses{background:var(--paper)}
+.expense-chart{display:flex;align-items:flex-end;gap:14px;height:220px;padding-top:16px;margin-bottom:0;border-bottom:2px solid var(--ink-faint)}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar-amt{font-size:0.7rem;color:var(--ink-light);font-variant-numeric:tabular-nums;min-height:14px;text-align:center}
+.bar{width:100%;min-height:4px;transition:height 0.8s cubic-bezier(.25,.46,.45,.94)}
+.bar.sapporo{background:var(--blue-city)}
+.bar.asahikawa{background:var(--green)}
+.bar.otaru{background:var(--gold-dark)}
+.bar-lbl{font-size:0.72rem;color:var(--ink-light);text-align:center;line-height:1.5;padding:8px 0 4px}
+.grand-total{text-align:center;margin-top:56px}
+.grand-total-lbl{font-size:0.82rem;letter-spacing:0.25em;color:var(--ink-light);margin-bottom:8px}
+.grand-total-num{font-family:var(--font-title);font-size:3.5rem;color:var(--ink)}
+.grand-total-num sup{font-size:1.6rem;vertical-align:super}
+
+/* GALLERY */
+#gallery{background:var(--paper-warm)}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;margin-top:40px}
+.gallery-item{aspect-ratio:1;overflow:hidden;cursor:pointer;box-shadow:0 0 0 9px #fff,var(--shadow-soft);transition:transform 0.2s}
+.gallery-item:nth-child(4n+1){transform:rotate(-0.8deg)}
+.gallery-item:nth-child(4n+2){transform:rotate(0.6deg)}
+.gallery-item:nth-child(4n+3){transform:rotate(-0.4deg)}
+.gallery-item:nth-child(4n+4){transform:rotate(0.9deg)}
+.gallery-item:hover{transform:rotate(0) scale(1.04)!important;z-index:10}
+.gallery-item img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-day-label{font-size:0.72rem;letter-spacing:0.12em;color:var(--ink-light);text-align:center;margin-top:10px;font-family:var(--font-body)}
+.gallery-empty{grid-column:1/-1;text-align:center;padding:64px 20px;color:var(--ink-faint);font-size:0.9rem;letter-spacing:0.2em;line-height:2}
+
+/* LIGHTBOX */
+#lightbox{position:fixed;inset:0;background:rgba(4,8,15,0.93);display:none;align-items:center;justify-content:center;z-index:500;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;box-shadow:0 0 80px rgba(0,0,0,0.7)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(240,235,224,0.45);text-align:center;padding:48px 24px;font-size:0.82rem;letter-spacing:0.15em}
+footer .ft-title{color:rgba(240,235,224,0.8);font-family:var(--font-title);font-size:1.3rem;margin-bottom:10px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .city-grid{grid-template-columns:1fr}
+  .city-card:nth-child(n){transform:none!important;margin-top:0}
+  .journal-paper{padding:24px 20px 24px 42px}
+  .journal-paper::before{left:36px}
+  .expense-chart{gap:8px;height:180px}
+  .bar-amt,.bar-lbl{font-size:0.6rem}
+  .section-inner{padding:64px 18px}
+  nav{gap:16px;padding:12px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-logo">北海道六日記</a>
+  <a href="#cities">城市</a>
+  <a href="#journal">日記</a>
+  <a href="#expenses">花費</a>
+  <a href="#gallery">相簿</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="snow-canvas"></canvas>
+  <div class="season-toggle">
+    <button class="season-btn active" id="btn-winter" onclick="setSeason('winter')">❄ 冬</button>
+    <button class="season-btn" id="btn-summer" onclick="setSeason('summer')">☀ 夏</button>
+  </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Hokkaido · 北海道 · 六日間の旅</p>
+    <h1 class="hero-title">北の<em>大地</em>へ</h1>
+    <p class="hero-sub">札幌 · 旭川 · 小樽</p>
+    <div class="hero-dates" contenteditable="true" id="hero-dates">2026 · __ · __ — __ · __</div>
+  </div>
+  <div class="hero-scroll"><span>scroll</span></div>
+  <div class="mountain"></div>
+</section>
+
+<!-- CITIES -->
+<section id="cities">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">此行目的地</h2>
+      <p class="section-sub">Destinations</p>
+      <div class="ink-rule"></div>
+    </div>
+    <div class="city-grid">
+      <div class="city-card sapporo">
+        <span class="city-icon">🏙</span>
+        <div class="city-jp">札幌</div>
+        <div class="city-en">SAPPORO · 第1–2天</div>
+        <p class="city-desc">建立於 1869 年，是北海道開拓使本廳所在地。大通公園貫穿城市心臟，薄野是日本最北的繁華街區。每年舉辦的雪祭（さっぽろ雪まつり）吸引全球旅人，創業於 1876 年的札幌啤酒則是城市的永恆驕傲。時計台與紅磚廳舍訴說著開拓時代的故事。</p>
+      </div>
+      <div class="city-card asahikawa">
+        <span class="city-icon">🦁</span>
+        <div class="city-jp">旭川</div>
+        <div class="city-en">ASAHIKAWA · 第3–4天</div>
+        <p class="city-desc">北海道第二大城市，位於島嶼中央。旭山動物園以「行動展示」革命性地改寫了日本動物園文化，曾躍居全日本參觀人數第一。旭川醬油拉麵被列為日本三大拉麵之一，家具工藝享譽全國，冬日氣溫常達零下30度的極寒之地。</p>
+      </div>
+      <div class="city-card otaru">
+        <span class="city-icon">⚓</span>
+        <div class="city-jp">小樽</div>
+        <div class="city-en">OTARU · 第5–6天</div>
+        <p class="city-desc">明治、大正時代的北海道金融貿易中心，有「北のウォール街」之稱。石造倉庫群沿運河排列，是日本重要的歷史景觀。精緻玻璃工藝、新鮮海鮮壽司、LeTAO 雙層乳酪蛋糕，以及冬日「雪燈之路」點亮的運河夜景——這裡的一切都值得細細品味。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNAL -->
+<section id="journal">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">旅途日記</h2>
+      <p class="section-sub">Travel Journal · 六日間の記録</p>
+      <div class="ink-rule"></div>
+    </div>
+    <div class="day-tabs" id="day-tabs"></div>
+    <div id="day-panels"></div>
+  </div>
+</section>
+
+<!-- EXPENSE OVERVIEW -->
+<section id="expenses">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">花費總覽</h2>
+      <p class="section-sub">Expense Overview</p>
+      <div class="ink-rule"></div>
+    </div>
+    <div class="expense-chart" id="expense-chart"></div>
+    <div class="grand-total">
+      <p class="grand-total-lbl">六天旅行總計</p>
+      <p class="grand-total-num"><sup>¥</sup><span id="grand-total">0</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">旅途相簿</h2>
+      <p class="section-sub">Photo Gallery · 思い出の写真</p>
+      <div class="ink-rule"></div>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-empty">照片上傳後將在此集中展示<br>每天的日記頁面都有上傳入口</div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p class="ft-title">北海道六日記</p>
+  <p>札幌 · 旭川 · 小樽 · 旅の記録</p>
+</footer>
+
+<script>
+// ============================================================
+//  SEASON STATE
+// ============================================================
+let isSummer = false;
+
+function setSeason(s) {
+  isSummer = (s === 'summer');
+  document.getElementById('hero').classList.toggle('summer', isSummer);
+  document.getElementById('btn-winter').classList.toggle('active', !isSummer);
+  document.getElementById('btn-summer').classList.toggle('active', isSummer);
+  localStorage.setItem('hk-season', s);
+  resetParticles();
+}
+
+// ============================================================
+//  CONFIG
+// ============================================================
+const DAYS = [
+  {day:1, title:'第一天', sub:'出発・札幌', city:'札幌', cls:'sapporo', seal:'旅', ph:'抵達札幌的第一個夜晚，記下今天的感受、第一印象...'},
+  {day:2, title:'第二天', sub:'探索・札幌', city:'札幌', cls:'sapporo', seal:'幌', ph:'大通公園、時計台、薄野...今天去了哪些地方？'},
+  {day:3, title:'第三天', sub:'移動・旭川', city:'旭川', cls:'asahikawa', seal:'川', ph:'搭乘特急列車往北，窗外的風景...' },
+  {day:4, title:'第四天', sub:'動物園・旭川', city:'旭川', cls:'asahikawa', seal:'旭', ph:'旭山動物園，那些動物的眼神令人難忘...'},
+  {day:5, title:'第五天', sub:'運河・小樽', city:'小樽', cls:'otaru', seal:'樽', ph:'小樽運河的燈光、玻璃工藝、海鮮...'},
+  {day:6, title:'第六天', sub:'道別・帰途', city:'帰途', cls:'otaru', seal:'帰', ph:'最後一天，帶著滿滿的回憶離開北海道...'},
+];
+const CATS = ['🚃 交通','🏨 住宿','🍜 餐飲','🛍 購物','🎫 門票','📦 其他'];
+let currentStars = {};
+
+// ============================================================
+//  SNOW
+// ============================================================
+function initSnow() {
+  const canvas = document.getElementById('snow-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, flakes;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeParticle() {
+    return {
+      x: Math.random() * W,
+      y: isSummer ? Math.random() * H : Math.random() * H - H,
+      r: isSummer ? Math.random() * 2.2 + 0.5 : Math.random() * 3.2 + 0.6,
+      speed: isSummer ? Math.random() * 0.5 + 0.15 : Math.random() * 1.0 + 0.25,
+      sway: Math.random() * 0.5 + 0.1,
+      swayOff: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.55 + 0.2,
+      angle: Math.random() * Math.PI * 2,
+    };
+  }
+
+  function resetParticles() {
+    flakes = Array.from({length: isSummer ? 70 : 200}, makeParticle);
+  }
+
+  resize();
+  flakes = Array.from({length: 200}, makeParticle);
+  window.addEventListener('resize', resize);
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.008;
+    flakes.forEach(f => {
+      if (isSummer) {
+        f.y -= f.speed * 0.45;
+        f.x += Math.sin(t * f.sway + f.swayOff) * 0.9;
+        if (f.y < -20) { f.y = H + 10; f.x = Math.random() * W; }
+      } else {
+        f.y += f.speed;
+        f.x += Math.sin(t * f.sway + f.swayOff) * 0.5;
+        if (f.y > H + 10) { f.y = -10; f.x = Math.random() * W; }
+      }
+      if (f.x > W + 10) f.x = -10;
+      if (f.x < -10) f.x = W + 10;
+
+      if (isSummer) {
+        // Dandelion seed: tiny dot + hair
+        ctx.save();
+        ctx.translate(f.x, f.y);
+        ctx.rotate(Math.sin(t * 0.5 + f.swayOff) * 0.4);
+        ctx.beginPath();
+        ctx.arc(0, 0, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(248,230,210,${f.opacity * 0.8})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, f.r * 3.5);
+        ctx.strokeStyle = `rgba(248,230,210,${f.opacity * 0.35})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+        ctx.fill();
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ============================================================
+//  NAV
+// ============================================================
+function initNav() {
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.7);
+  }, {passive: true});
+  const d = localStorage.getItem('hk-hero-dates');
+  if (d) document.getElementById('hero-dates').textContent = d;
+  document.getElementById('hero-dates').addEventListener('input', function() {
+    localStorage.setItem('hk-hero-dates', this.textContent);
+  });
+}
+
+// ============================================================
+//  BUILD PANELS
+// ============================================================
+function buildPanels() {
+  const tabsEl = document.getElementById('day-tabs');
+  const panelsEl = document.getElementById('day-panels');
+  const chartEl = document.getElementById('expense-chart');
+
+  DAYS.forEach((d, i) => {
+    // Tab
+    const tab = document.createElement('button');
+    tab.className = 'day-tab' + (i === 0 ? ' active' : '');
+    tab.textContent = d.title;
+    tab.onclick = () => switchDay(d.day);
+    tabsEl.appendChild(tab);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'day-panel' + (i === 0 ? ' active' : '');
+    panel.id = `panel-${d.day}`;
+    panel.innerHTML = `
+      <div class="day-header">
+        <span class="day-number">${d.title}</span>
+        <span class="city-badge ${d.cls}">${d.city}</span>
+        <input class="day-date-in" id="ddate-${d.day}" type="text" placeholder="YYYY.MM.DD"
+          onchange="localStorage.setItem('hk-date-${d.day}',this.value)">
+        <select class="wx-sel" id="wx-${d.day}"
+          onchange="localStorage.setItem('hk-wx-${d.day}',this.value)">
+          <option value="☀">☀ 晴</option>
+          <option value="⛅">⛅ 多雲</option>
+          <option value="☁">☁ 陰</option>
+          <option value="🌨">🌨 雪</option>
+          <option value="🌧">🌧 雨</option>
+        </select>
+      </div>
+
+      <div class="journal-paper">
+        <div class="seal">${d.seal}</div>
+        <div class="journal-text" id="jtext-${d.day}"
+          contenteditable="true"
+          data-ph="${d.ph}"
+          oninput="saveJournal(${d.day},this.innerHTML)"></div>
+      </div>
+
+      <div class="day-sec">
+        <h3 class="day-sec-title">美食紀錄</h3>
+        <div id="food-list-${d.day}"></div>
+        <button class="btn-add" onclick="toggleForm('food-form-${d.day}')">＋ 新增美食</button>
+        <div class="add-form" id="food-form-${d.day}">
+          <div class="fg">
+            <label>食物名稱</label>
+            <input type="text" id="fname-${d.day}" placeholder="例：味噌拉麵">
+          </div>
+          <div class="fg">
+            <label>餐廳名稱</label>
+            <input type="text" id="frest-${d.day}" placeholder="例：拉麵橫丁">
+          </div>
+          <div class="fg" style="flex:0;min-width:90px">
+            <label>評分</label>
+            <div class="star-row" id="stars-${d.day}">
+              ${[1,2,3,4,5].map(n=>`<span onclick="setStar(${d.day},${n})">★</span>`).join('')}
+            </div>
+          </div>
+          <button class="btn-pri" onclick="addFood(${d.day})">記錄</button>
+        </div>
+      </div>
+
+      <div class="day-sec">
+        <h3 class="day-sec-title">今日花費</h3>
+        <div id="exp-list-${d.day}"></div>
+        <div class="day-total-row">
+          <span class="day-total-lbl">今日小計</span>
+          <span class="day-total-num">¥<span id="dtotal-${d.day}">0</span></span>
+        </div>
+        <button class="btn-add" onclick="toggleForm('exp-form-${d.day}')">＋ 新增支出</button>
+        <div class="add-form" id="exp-form-${d.day}">
+          <div class="fg" style="flex:0;min-width:110px">
+            <label>類別</label>
+            <select id="ecat-${d.day}">
+              ${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fg">
+            <label>項目說明</label>
+            <input type="text" id="ename-${d.day}" placeholder="例：特急列車票">
+          </div>
+          <div class="fg" style="flex:0;min-width:100px">
+            <label>金額（¥）</label>
+            <input type="number" id="eamt-${d.day}" placeholder="0" min="0">
+          </div>
+          <button class="btn-pri" onclick="addExpense(${d.day})">記錄</button>
+        </div>
+      </div>
+
+      <div class="day-sec">
+        <h3 class="day-sec-title">今日照片</h3>
+        <div class="photo-grid" id="pgrid-${d.day}"></div>
+        <label class="upload-area">
+          <input type="file" accept="image/*" multiple onchange="handlePhotos(event,${d.day})">
+          <div class="upload-icon">＋</div>
+          <p>點擊上傳照片</p>
+        </label>
+      </div>
+    `;
+    panelsEl.appendChild(panel);
+
+    // Chart bar
+    const barWrap = document.createElement('div');
+    barWrap.className = 'bar-wrap';
+    barWrap.innerHTML = `
+      <div class="bar-amt" id="bamt-${d.day}"></div>
+      <div class="bar ${d.cls}" id="bar-${d.day}" style="height:4px"></div>
+      <div class="bar-lbl">${d.title}<br><span style="color:var(--ink-faint)">${d.city}</span></div>
+    `;
+    chartEl.appendChild(barWrap);
+  });
+}
+
+// ============================================================
+//  TAB SWITCH
+// ============================================================
+function switchDay(day) {
+  document.querySelectorAll('.day-tab').forEach((t, i) => {
+    t.classList.toggle('active', DAYS[i].day === day);
+  });
+  document.querySelectorAll('.day-panel').forEach(p => {
+    p.classList.toggle('active', p.id === `panel-${day}`);
+  });
+}
+
+// ============================================================
+//  FORM TOGGLE
+// ============================================================
+function toggleForm(id) {
+  const f = document.getElementById(id);
+  f.classList.toggle('open');
+}
+
+// ============================================================
+//  JOURNAL
+// ============================================================
+let jTimers = {};
+function saveJournal(day, html) {
+  clearTimeout(jTimers[day]);
+  jTimers[day] = setTimeout(() => {
+    localStorage.setItem(`hk-j-${day}`, html);
+  }, 600);
+}
+function loadJournals() {
+  DAYS.forEach(d => {
+    const el = document.getElementById(`jtext-${d.day}`);
+    const saved = localStorage.getItem(`hk-j-${d.day}`);
+    if (saved) el.innerHTML = saved;
+    const date = localStorage.getItem(`hk-date-${d.day}`);
+    if (date) document.getElementById(`ddate-${d.day}`).value = date;
+    const wx = localStorage.getItem(`hk-wx-${d.day}`);
+    if (wx) document.getElementById(`wx-${d.day}`).value = wx;
+  });
+}
+
+// ============================================================
+//  STARS
+// ============================================================
+function setStar(day, n) {
+  currentStars[day] = n;
+  document.querySelectorAll(`#stars-${day} span`).forEach((s, i) => {
+    s.classList.toggle('on', i < n);
+  });
+}
+
+// ============================================================
+//  FOOD
+// ============================================================
+function getFoods(day) {
+  try { return JSON.parse(localStorage.getItem(`hk-foods-${day}`)) || []; } catch { return []; }
+}
+function saveFoods(day, arr) {
+  localStorage.setItem(`hk-foods-${day}`, JSON.stringify(arr));
+}
+function renderFoods(day) {
+  const list = document.getElementById(`food-list-${day}`);
+  const foods = getFoods(day);
+  if (!foods.length) { list.innerHTML = ''; return; }
+  list.innerHTML = '';
+  foods.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'food-item';
+    const stars = '★'.repeat(f.stars) + '☆'.repeat(5 - f.stars);
+    el.innerHTML = `
+      <div style="flex:1">
+        <span class="food-name"></span>
+        <span style="color:var(--ink-faint);margin:0 6px">·</span>
+        <span class="food-rest"></span>
+      </div>
+      <span class="food-stars">${stars}</span>
+      <button class="del-btn" onclick="deleteFood(${day},${i})" title="刪除">×</button>
+    `;
+    el.querySelector('.food-name').textContent = f.name;
+    el.querySelector('.food-rest').textContent = f.rest;
+    list.appendChild(el);
+  });
+}
+function addFood(day) {
+  const name = document.getElementById(`fname-${day}`).value.trim();
+  if (!name) return;
+  const rest = document.getElementById(`frest-${day}`).value.trim();
+  const stars = currentStars[day] || 0;
+  const foods = getFoods(day);
+  foods.push({name, rest, stars});
+  saveFoods(day, foods);
+  renderFoods(day);
+  document.getElementById(`fname-${day}`).value = '';
+  document.getElementById(`frest-${day}`).value = '';
+  currentStars[day] = 0;
+  document.querySelectorAll(`#stars-${day} span`).forEach(s => s.classList.remove('on'));
+}
+function deleteFood(day, idx) {
+  const foods = getFoods(day);
+  foods.splice(idx, 1);
+  saveFoods(day, foods);
+  renderFoods(day);
+}
+
+// ============================================================
+//  EXPENSES
+// ============================================================
+function getExpenses(day) {
+  try { return JSON.parse(localStorage.getItem(`hk-exp-${day}`)) || []; } catch { return []; }
+}
+function saveExpenses(day, arr) {
+  localStorage.setItem(`hk-exp-${day}`, JSON.stringify(arr));
+}
+function getDayTotal(day) {
+  return getExpenses(day).reduce((s, e) => s + (e.amt || 0), 0);
+}
+function renderExpenses(day) {
+  const list = document.getElementById(`exp-list-${day}`);
+  const exps = getExpenses(day);
+  list.innerHTML = '';
+  exps.forEach((e, i) => {
+    const el = document.createElement('div');
+    el.className = 'exp-item';
+    el.innerHTML = `
+      <span class="exp-cat">${e.cat.split(' ')[0]}</span>
+      <span class="exp-name"></span>
+      <span class="exp-amt">¥<span></span></span>
+      <button class="del-btn" onclick="deleteExpense(${day},${i})" title="刪除">×</button>
+    `;
+    el.querySelector('.exp-name').textContent = e.name;
+    el.querySelector('.exp-amt span').textContent = e.amt.toLocaleString();
+    list.appendChild(el);
+  });
+  document.getElementById(`dtotal-${day}`).textContent = getDayTotal(day).toLocaleString();
+  updateChart();
+}
+function addExpense(day) {
+  const name = document.getElementById(`ename-${day}`).value.trim();
+  const amt = parseInt(document.getElementById(`eamt-${day}`).value) || 0;
+  if (!name || !amt) return;
+  const cat = document.getElementById(`ecat-${day}`).value;
+  const exps = getExpenses(day);
+  exps.push({cat, name, amt});
+  saveExpenses(day, exps);
+  renderExpenses(day);
+  document.getElementById(`ename-${day}`).value = '';
+  document.getElementById(`eamt-${day}`).value = '';
+}
+function deleteExpense(day, idx) {
+  const exps = getExpenses(day);
+  exps.splice(idx, 1);
+  saveExpenses(day, exps);
+  renderExpenses(day);
+}
+
+// ============================================================
+//  CHART
+// ============================================================
+function updateChart() {
+  const totals = DAYS.map(d => getDayTotal(d.day));
+  const max = Math.max(...totals, 1);
+  const maxH = 190;
+  totals.forEach((t, i) => {
+    const bar = document.getElementById(`bar-${DAYS[i].day}`);
+    const amt = document.getElementById(`bamt-${DAYS[i].day}`);
+    if (bar) bar.style.height = Math.max(4, (t / max) * maxH) + 'px';
+    if (amt) amt.textContent = t > 0 ? `¥${t.toLocaleString()}` : '';
+  });
+  const grand = totals.reduce((a, b) => a + b, 0);
+  document.getElementById('grand-total').textContent = grand.toLocaleString();
+}
+
+// ============================================================
+//  PHOTOS
+// ============================================================
+function getPhotos(day) {
+  try { return JSON.parse(localStorage.getItem(`hk-photos-${day}`)) || []; } catch { return []; }
+}
+function savePhotos(day, arr) {
+  try {
+    localStorage.setItem(`hk-photos-${day}`, JSON.stringify(arr));
+  } catch(e) {
+    alert('儲存空間不足，請刪除部分照片後再試。');
+  }
+}
+function renderPhotos(day) {
+  const grid = document.getElementById(`pgrid-${day}`);
+  const photos = getPhotos(day);
+  grid.innerHTML = '';
+  photos.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = `第${day}天照片`;
+    img.onclick = () => openLightbox(src);
+    const del = document.createElement('button');
+    del.className = 'photo-del';
+    del.textContent = '×';
+    del.onclick = (e) => { e.stopPropagation(); deletePhoto(day, i); };
+    item.appendChild(img);
+    item.appendChild(del);
+    grid.appendChild(item);
+  });
+  renderGallery();
+}
+async function handlePhotos(event, day) {
+  const files = Array.from(event.target.files);
+  const photos = getPhotos(day);
+  for (const file of files) {
+    const compressed = await compressImage(file, 800, 0.65);
+    photos.push(compressed);
+  }
+  savePhotos(day, photos);
+  renderPhotos(day);
+  event.target.value = '';
+}
+function compressImage(file, maxSize, quality) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxSize || h > maxSize) {
+          if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else { w = Math.round(w * maxSize / h); h = maxSize; }
+        }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function deletePhoto(day, idx) {
+  const photos = getPhotos(day);
+  photos.splice(idx, 1);
+  savePhotos(day, photos);
+  renderPhotos(day);
+}
+
+// ============================================================
+//  GALLERY
+// ============================================================
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+  let total = 0;
+  DAYS.forEach(d => {
+    const photos = getPhotos(d.day);
+    photos.forEach((src, i) => {
+      total++;
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.flexDirection = 'column';
+      wrap.style.alignItems = 'center';
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `${d.title}照片`;
+      img.onclick = () => openLightbox(src);
+      item.appendChild(img);
+      const lbl = document.createElement('p');
+      lbl.className = 'gallery-day-label';
+      lbl.textContent = `${d.title} · ${d.city}`;
+      wrap.appendChild(item);
+      wrap.appendChild(lbl);
+      grid.appendChild(wrap);
+    });
+  });
+  if (total === 0) {
+    grid.innerHTML = '<div class="gallery-empty">照片上傳後將在此集中展示<br>每天的日記頁面都有上傳入口</div>';
+  }
+}
+
+// ============================================================
+//  LIGHTBOX
+// ============================================================
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const savedSeason = localStorage.getItem('hk-season') || 'winter';
+  if (savedSeason === 'summer') setSeason('summer');
+  initSnow();
+  initNav();
+  buildPanels();
+  loadJournals();
+  DAYS.forEach(d => {
+    renderFoods(d.day);
+    renderExpenses(d.day);
+    renderPhotos(d.day);
+  });
+  updateChart();
+  renderGallery();
+});
+</script>
+</body>
+</html>
